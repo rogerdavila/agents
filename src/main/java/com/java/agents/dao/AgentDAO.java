@@ -12,7 +12,7 @@ public interface AgentDAO {
 	
 	Agent get(int agentId);
 	
-	String update(int agentId);
+	String update(Agent agent);
 	
 	String delete(int agentId);
 	

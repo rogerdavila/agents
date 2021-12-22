@@ -15,9 +15,9 @@ import com.java.agents.bean.Agent;
 import com.java.agents.bean.Gender;
 
 public class AgentDAOImpl implements AgentDAO {
-	
+
 	private JdbcTemplate jdbcTemplate;
-	
+
 	public AgentDAOImpl(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
@@ -49,12 +49,11 @@ public class AgentDAOImpl implements AgentDAO {
 
 	@Override
 	public String add(Agent agent) {
-		String sql = "INSERT INTO AGENT(name,city,gender,"
-				+ "maritalstatus,premium) values (?,?,?,?,?)";
-		
+		String sql = "INSERT INTO AGENT(name,city,gender, maritalstatus,premium) values (?,?,?,?,?)";
+
 		jdbcTemplate.update(sql, agent.getName(), agent.getCity(), agent.getGender().toString(),
 				agent.getMaritalStatus(), agent.getPremium());
-		
+
 		return "Agent created successfully";
 	}
 
@@ -66,7 +65,8 @@ public class AgentDAOImpl implements AgentDAO {
 			public Agent extractData(ResultSet rs) throws SQLException, DataAccessException {
 				if (rs.next()) {
 					Agent agent = new Agent();
-
+					
+					agent.setAgentId(rs.getInt("agentId"));
 					agent.setName(rs.getString("name"));
 					agent.setCity(rs.getString("city"));
 					agent.setGender(Gender.valueOf(rs.getString("gender")));
@@ -81,15 +81,22 @@ public class AgentDAOImpl implements AgentDAO {
 	}
 
 	@Override
-	public String update(int agentId) {
-		// TODO Auto-generated method stub
-		return null;
+	public String update(Agent agent) {
+		String sql = "UPDATE AGENT set name=?,gender=?, city=?, maritalstatus=?, premium=? WHERE agentId=?";
+		
+		jdbcTemplate.update(sql, agent.getName(), agent.getGender().toString(), agent.getCity(), agent.getMaritalStatus(),
+				agent.getPremium(), agent.getAgentId());
+		
+		return "Agent updated successfully";
 	}
 
 	@Override
 	public String delete(int agentId) {
-		// TODO Auto-generated method stub
-		return null;
+		String sql = "DELETE FROM agent WHERE agentId = ?";
+		
+		jdbcTemplate.update(sql, agentId);
+		
+		return "Agent deleted successfully";
 	}
 
 }

@@ -30,6 +30,8 @@
 						<td>${agent.gender}</td>
 						<td><c:out value="${agent.maritalStatus == 0 ? 'SINGLE' : 'MARRIED'}"/></td>
 						<td>${agent.premium}</td>
+						<td><a href="editagent?agentId=${agent.agentId}">Edit</a></td>
+						<td><a href="deleteagent?agentId=${agent.agentId}">Delete</a></td>
 					</tr>
 				</c:forEach>
 	        </table>

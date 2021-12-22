@@ -45,7 +45,7 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter{
 	}
 
 	@Bean
-	public AgentDAOImpl getComplaintDAO() {
+	public AgentDAOImpl getAgentDAO() {
 		return new AgentDAOImpl(getDataSource());
 	}
 	
