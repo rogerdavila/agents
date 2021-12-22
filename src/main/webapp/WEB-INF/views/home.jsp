@@ -28,7 +28,7 @@
 						<td>${agent.name}</td>
 						<td>${agent.city}</td>
 						<td>${agent.gender}</td>
-						<td>${agent.maritalStatus}</td>
+						<td><c:out value="${agent.maritalStatus == 0 ? 'SINGLE' : 'MARRIED'}"/></td>
 						<td>${agent.premium}</td>
 					</tr>
 				</c:forEach>
