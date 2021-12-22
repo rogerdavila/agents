@@ -42,7 +42,7 @@
 				</tr>
 				<tr>
 					<td>Premium</td>
-					<td><form:input type="number" path="premium"/></td>
+					<td><form:input type="number" path="premium" step=".01"/></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center"><input type="submit"

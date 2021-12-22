@@ -52,7 +52,7 @@ public class AgentDAOImpl implements AgentDAO {
 		String sql = "INSERT INTO AGENT(name,city,gender,"
 				+ "maritalstatus,premium) values (?,?,?,?,?)";
 		
-		jdbcTemplate.update(sql, agent.getName(), agent.getCity(), agent.getGender(),
+		jdbcTemplate.update(sql, agent.getName(), agent.getCity(), agent.getGender().toString(),
 				agent.getMaritalStatus(), agent.getPremium());
 		
 		return "Agent created successfully";
