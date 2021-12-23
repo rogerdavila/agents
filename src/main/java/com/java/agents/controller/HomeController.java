@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.java.agents.bean.Agent;
+import com.java.agents.bean.AgentBean;
 import com.java.agents.dao.AgentDAO;
 
 @Controller
@@ -23,7 +23,7 @@ public class HomeController {
 
 	@RequestMapping(value = "/")
 	public ModelAndView listAgents(ModelAndView model) throws IOException {
-		List<Agent> agents = agentDAO.list();
+		List<AgentBean> agents = agentDAO.list();
 
 		model.setViewName("home");
 		model.addObject("agents", agents);
@@ -33,7 +33,7 @@ public class HomeController {
 
 	@RequestMapping(value = "addagent", method = RequestMethod.GET)
 	public ModelAndView addAgent(ModelAndView model) {
-		Agent agent = new Agent();
+		AgentBean agent = new AgentBean();
 		model.addObject("agent", agent);
 		model.setViewName("agentform");
 
@@ -41,7 +41,7 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "saveagent", method = RequestMethod.POST)
-	public ModelAndView saveAgent(@ModelAttribute Agent agent) {
+	public ModelAndView saveAgent(@ModelAttribute AgentBean agent) {
 		agentDAO.add(agent);
 		return new ModelAndView("redirect:/");
 	}
@@ -49,7 +49,7 @@ public class HomeController {
 	@RequestMapping(value = "/editagent")
 	public ModelAndView editAgent(HttpServletRequest request) {
 		int agentId = Integer.parseInt(request.getParameter("agentId"));
-		Agent agent = agentDAO.get(agentId);
+		AgentBean agent = agentDAO.get(agentId);
 		ModelAndView model = new ModelAndView("agentsearchform");
 		model.addObject("agent", agent);
 
@@ -57,7 +57,7 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/updateagent", method = RequestMethod.POST)
-	public ModelAndView updateagent(@ModelAttribute Agent agent) {
+	public ModelAndView updateagent(@ModelAttribute AgentBean agent) {
 		agentDAO.update(agent);
 		return new ModelAndView("redirect:/");
 	}

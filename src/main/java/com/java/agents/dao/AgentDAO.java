@@ -2,17 +2,17 @@ package com.java.agents.dao;
 
 import java.util.List;
 
-import com.java.agents.bean.Agent;
+import com.java.agents.bean.AgentBean;
 
 public interface AgentDAO {
 
-	List<Agent> list();
+	List<AgentBean> list();
 	
-	String add(Agent agent);
+	String add(AgentBean agent);
 	
-	Agent get(int agentId);
+	AgentBean get(int agentId);
 	
-	String update(Agent agent);
+	String update(AgentBean agent);
 	
 	String delete(int agentId);
 	

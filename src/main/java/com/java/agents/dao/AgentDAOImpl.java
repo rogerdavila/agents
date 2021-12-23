@@ -1,100 +1,80 @@
 package com.java.agents.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
-import javax.sql.DataSource;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
-
-import com.java.agents.bean.Agent;
-import com.java.agents.bean.Gender;
+import com.java.agents.bean.AgentBean;
+import com.java.agents.entity.Agent;
+import com.java.agents.mapper.AgentMapper;
 
 public class AgentDAOImpl implements AgentDAO {
-
-	private JdbcTemplate jdbcTemplate;
-
-	public AgentDAOImpl(DataSource dataSource) {
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	
+	@Autowired
+	private SessionFactory sessionFactory;
+	
+	@Override
+	public List<AgentBean> list() {
+		Session session = sessionFactory.openSession();
+		
+		Query q = session.createQuery("from Agent");
+		
+		List<Agent> agents = q.list();
+		
+		return AgentMapper.entityListToBeanList(agents);
 	}
 
 	@Override
-	public List<Agent> list() {
-		String sql = "select * from agent";
-
-		List<Agent> agents = jdbcTemplate.query(sql, new RowMapper<Agent>() {
-
-			@Override
-			public Agent mapRow(ResultSet rs, int rowNum) throws SQLException {
-				Agent agent = new Agent();
-
-				agent.setAgentId(rs.getInt("agentId"));
-				agent.setName(rs.getString("name"));
-				agent.setCity(rs.getString("city"));
-				agent.setGender(Gender.valueOf(rs.getString("gender")));
-				agent.setMaritalStatus(rs.getInt("maritalstatus"));
-				agent.setPremium(rs.getDouble("premium"));
-
-				return agent;
-			}
-
-		});
-
-		return agents;
-	}
-
-	@Override
-	public String add(Agent agent) {
-		String sql = "INSERT INTO AGENT(name,city,gender, maritalstatus,premium) values (?,?,?,?,?)";
-
-		jdbcTemplate.update(sql, agent.getName(), agent.getCity(), agent.getGender().toString(),
-				agent.getMaritalStatus(), agent.getPremium());
-
+	public String add(AgentBean bean) {
+		Agent agent = AgentMapper.beanToEntity(bean, new Agent());
+		
+		Session session = sessionFactory.openSession();
+		Transaction t = session.beginTransaction();
+		session.save(agent);
+		t.commit();
+		
 		return "Agent created successfully";
 	}
 
 	@Override
-	public Agent get(int agentId) {
-		String sql = "select * from Agent where agentId=?";
-		return jdbcTemplate.query(sql, new Object[] { agentId }, new ResultSetExtractor<Agent>() {
-			@Override
-			public Agent extractData(ResultSet rs) throws SQLException, DataAccessException {
-				if (rs.next()) {
-					Agent agent = new Agent();
-					
-					agent.setAgentId(rs.getInt("agentId"));
-					agent.setName(rs.getString("name"));
-					agent.setCity(rs.getString("city"));
-					agent.setGender(Gender.valueOf(rs.getString("gender")));
-					agent.setMaritalStatus(rs.getInt("maritalstatus"));
-					agent.setPremium(rs.getDouble("premium"));
-
-					return agent;
-				}
-				return null;
-			}
-		});
+	public AgentBean get(int agentId) {
+		Session session = sessionFactory.openSession();
+		
+		Agent agent = (Agent) session.byId(Agent.class).load(agentId);
+		
+		return AgentMapper.entityToBean(agent);
+//		Query q = session.createQuery("from Agent where agentId = " + agentId);
+//		List<Agent> agents = q.list();
+//		if (agents.size() == 1) {
+//			return AgentMapper.entityToBean(agents.get(0));
+//		}
+//		return null;
 	}
 
 	@Override
-	public String update(Agent agent) {
-		String sql = "UPDATE AGENT set name=?,gender=?, city=?, maritalstatus=?, premium=? WHERE agentId=?";
+	public String update(AgentBean bean) {
+		Session session = sessionFactory.openSession();
 		
-		jdbcTemplate.update(sql, agent.getName(), agent.getGender().toString(), agent.getCity(), agent.getMaritalStatus(),
-				agent.getPremium(), agent.getAgentId());
+		Agent agent = (Agent) session.byId(Agent.class).load(bean.getAgentId());
+		Transaction t = session.beginTransaction();
+		AgentMapper.beanToEntity(bean, agent);
+		session.save(agent);
+		t.commit();
 		
 		return "Agent updated successfully";
 	}
 
 	@Override
 	public String delete(int agentId) {
-		String sql = "DELETE FROM agent WHERE agentId = ?";
-		
-		jdbcTemplate.update(sql, agentId);
+		Session session = sessionFactory.openSession();
+		Agent agent = (Agent) session.byId(Agent.class).load(agentId);
+		Transaction t = session.beginTransaction();
+		session.delete(agent);
+		t.commit();
 		
 		return "Agent deleted successfully";
 	}

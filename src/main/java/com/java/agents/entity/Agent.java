@@ -1,17 +1,36 @@
-package com.java.agents.bean;
+package com.java.agents.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.java.agents.bean.Gender;
+
+@Entity
+@Table(name = "agent")
 public class Agent {
 
+	@Id
+	@Column(name = "agentid")
 	private int agentId;
-	
+
+	@Column(name = "name")
 	private String name;
-	
+
+	@Column(name = "city")
 	private String city;
-	
+
+	@Column(name = "gender")
+	@Enumerated(EnumType.STRING)
 	private Gender gender;
-	
+
+	@Column(name = "maritalstatus")
 	private int maritalStatus;
-	
+
+	@Column(name = "premium")
 	private double premium;
 
 	public int getAgentId() {
